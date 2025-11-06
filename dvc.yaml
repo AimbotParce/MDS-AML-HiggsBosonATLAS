@@ -1,0 +1,25 @@
+stages:
+  download-test-dataset:
+    cmd: uv run kaggle competitions download -c higgs-boson --path data/zip/ 
+      --file test.zip
+    outs:
+    - data/zip/test.zip
+  download-training-dataset:
+    cmd: uv run kaggle competitions download -c higgs-boson --path data/zip/ 
+      --file training.zip
+    outs:
+    - data/zip/training.zip
+  unzip-training-dataset:
+    cmd: uv run python -c "import shutil; 
+      shutil.unpack_archive('data/zip/training.zip', 'data/raw/')"
+    deps:
+    - data/zip/training.zip
+    outs:
+    - data/raw/training.csv
+  unzip-test-dataset:
+    cmd: uv run python -c "import shutil; 
+      shutil.unpack_archive('data/zip/test.zip', 'data/raw/')"
+    deps:
+    - data/zip/training.zip
+    outs:
+    - data/raw/test.csv
