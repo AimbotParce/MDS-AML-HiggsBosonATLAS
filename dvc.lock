@@ -1,44 +1,11 @@
 schema: '2.0'
 stages:
-  download-test-dataset:
-    cmd: uv run kaggle competitions download -c higgs-boson --path data/zip/ 
-      --file test.zip
+  download-dataset:
+    cmd: uv run python -c "import urllib.request; 
+      urllib.request.urlretrieve('https://opendata.cern.ch/record/328/files/atlas-higgs-challenge-2014-v2.csv.gz',
+      'data/raw/higgs-challenge.csv.gz')"
     outs:
-    - path: data/zip/test.zip
+    - path: data/raw/higgs-challenge.csv.gz
       hash: md5
-      md5: 6703d7bd6b79f451cd8d29fd69e8a19a
-      size: 36483908
-  download-training-dataset:
-    cmd: uv run kaggle competitions download -c higgs-boson --path data/zip/ 
-      --file training.zip
-    outs:
-    - path: data/zip/training.zip
-      hash: md5
-      md5: c68fd85f66084cd9eae8780111583139
-      size: 17712751
-  unzip-training-dataset:
-    cmd: uv run python -c "import shutil; 
-      shutil.unpack_archive('data/zip/training.zip', 'data/raw/')"
-    deps:
-    - path: data/zip/training.zip
-      hash: md5
-      md5: c68fd85f66084cd9eae8780111583139
-      size: 17712751
-    outs:
-    - path: data/raw/training.csv
-      hash: md5
-      md5: d7ee5a8f368cb2e33a21a53b39f4b69e
-      size: 55253673
-  unzip-test-dataset:
-    cmd: uv run python -c "import shutil; 
-      shutil.unpack_archive('data/zip/test.zip', 'data/raw/')"
-    deps:
-    - path: data/zip/training.zip
-      hash: md5
-      md5: c68fd85f66084cd9eae8780111583139
-      size: 17712751
-    outs:
-    - path: data/raw/test.csv
-      hash: md5
-      md5: 27b6223247b0e6323e89f12470193275
-      size: 112278440
+      md5: ae01726fcb46bddc5212cbda5806a180
+      size: 65630848
