@@ -1,2 +1,4 @@
-/df_preprocessed.csv
-/weights.csv
+/test_no_preprocess.csv
+/train_no_preprocess.csv
+/test_preprocess.csv
+/train_preprocess.csv
