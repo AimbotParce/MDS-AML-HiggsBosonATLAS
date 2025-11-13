@@ -9,6 +9,7 @@ from sklearn.utils.validation import validate_data
 YType = TypeVar("YType", bound=np.generic)
 
 Array1DFloat = Annotated[NDArray[np.float64], Literal["N"]]
+Array1DInt = Annotated[NDArray[np.int64], Literal["N"]]
 
 
 class FittedProbabilityEstimator(ABC):
@@ -228,8 +229,11 @@ class CategoricalAwareBespokeNB(_BaseNB, Generic[YType]):
         return X
 
 
+from .categorical_estimator import CategoricalEstimator
 from .histogram_estimator import HistogramEstimator
-from .kde_estimators import *
+from .kde_estimators.gaussian_kernel import GaussianKDEstimator
+from .kde_estimators.robust_gaussian_kernel import RobustGaussianKDEstimator
+from .robust_categorical_estimator import RobustCategoricalEstimator
 from .robust_histogram_estimator import RobustHistogramEstimator
 
 __all__ = [
@@ -238,6 +242,9 @@ __all__ = [
     "FittedProbabilityEstimator",
     "ProbabilityEstimator",
     "HistogramEstimator",
-    "RobustHistogramEstimator",
     "GaussianKDEstimator",
+    "CategoricalEstimator",
+    "RobustHistogramEstimator",
+    "RobustGaussianKDEstimator",
+    "RobustCategoricalEstimator",
 ]

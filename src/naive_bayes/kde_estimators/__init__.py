@@ -140,8 +140,3 @@ class RobustKDEstimatorBase(ProbabilityEstimator, ABC):
             n = len(non_nan_X)
             self.bandwidth = 1.06 * std_dev * n ** (-1 / 5)
         return self._create_fitted_estimator(non_nan_X, self.bandwidth, nan_probability)
-
-
-from .gaussian_kernel import GaussianKDEstimator, RobustGaussianKDEstimator
-
-__all__ = ["GaussianKDEstimator", "RobustGaussianKDEstimator"]
