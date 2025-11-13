@@ -1,4 +1,5 @@
 import math
+import warnings
 from abc import ABC, abstractmethod
 from typing import Generic, List, Optional, Self, TypeVar
 
@@ -10,6 +11,9 @@ from .. import Array1DFloat, ProbabilityEstimator
 
 def silverman_bandwidth_rule_of_thumb(X: Array1DFloat) -> float:
     """Compute the bandwidth using Silverman's rule of thumb."""
+    if len(X) < 2:
+        warnings.warn("Not enough data points to compute bandwidth. Using arbitrary value of 1.0.")
+        return 1.0  # Arbitrary bandwidth for single data point
     std_dev = np.std(X, ddof=1)
     n = len(X)
     return 1.06 * std_dev * n ** (-1 / 5)
@@ -247,6 +251,10 @@ class RobustEagerKDEstimatorBase(ProbabilityEstimator, ABC):
             bandwidth = silverman_bandwidth_rule_of_thumb(non_nan_X)
         else:
             bandwidth = self.bandwidth
+
+        if len(non_nan_X) == 0:
+            warnings.warn("All data points are NaN. Density estimation cannot be computed. Using empty density.")
+            return self.copy_with(_bin_edges=np.array([]), _density=np.array([]), _nan_probability=nan_probability)
 
         iqr = np.subtract(*np.percentile(non_nan_X, [75, 25]))
         min_x, max_x = (np.min(non_nan_X) - self.range_padding * iqr, np.max(non_nan_X) + self.range_padding * iqr)
