@@ -23,6 +23,9 @@ class FittedKDEstimatorMixin(FittedProbabilityEstimator):
     Fitted kernel density estimator for a single feature.
 
     This estimator does not support NaN values in the input data.
+
+    Note: This is a Lazy implementation, which computes the density estimation
+    on-the-fly during prediction.
     """
 
     def __init__(self, X: Array1DFloat, bandwidth: float):
@@ -43,6 +46,9 @@ class KDEstimatorBase(ProbabilityEstimator, ABC):
     Kernel density estimator base class for a single feature.
 
     This estimator does not support NaN values in the input data.
+
+    Note: This is a Lazy implementation, which computes the density estimation
+    on-the-fly during prediction.
     """
 
     def __init__(self, bandwidth: Optional[float] = None):
@@ -75,6 +81,9 @@ class FittedRobustKDEstimatorMixin(FittedProbabilityEstimator):
     both in the training and prediction phases. If a feature is missing in the
     training stage, its missingness is considered as a separate "component" in the
     density estimation. This allows the model to learn from the absence of data as well.
+
+    Note: This is a Lazy implementation, which computes the density estimation
+    on-the-fly during prediction.
     """
 
     def __init__(self, non_nan_X: Array1DFloat, bandwidth: float, nan_probability: float):
@@ -103,6 +112,9 @@ class RobustKDEstimatorBase(ProbabilityEstimator, ABC):
     both in the training and prediction phases. If a feature is missing in the
     training stage, its missingness is considered as a separate "component" in the
     density estimation. This allows the model to learn from the absence of data as well.
+
+    Note: This is a Lazy implementation, which computes the density estimation
+    on-the-fly during prediction.
     """
 
     def __init__(self, bandwidth: Optional[float] = None):
