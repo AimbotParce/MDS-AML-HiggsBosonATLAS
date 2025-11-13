@@ -233,6 +233,7 @@ class CategoricalAwareBespokeNB(_BaseNB, Generic[YType]):
 
 
 from .categorical_estimator import CategoricalEstimator, RobustCategoricalEstimator
+from .gaussian_estimator import GaussianEstimator, RobustGaussianEstimator
 from .histogram_estimator import HistogramEstimator, RobustHistogramEstimator
 from .kde_estimators import (
     EagerGaussianKDEstimator,
@@ -240,7 +241,6 @@ from .kde_estimators import (
     RobustEagerGaussianKDEstimator,
     RobustGaussianKDEstimator,
 )
-
 
 __all__ = [
     "BespokeNB",
@@ -254,5 +254,6 @@ __all__ = [
     "RobustGaussianKDEstimator",
     "RobustEagerGaussianKDEstimator",
     "RobustCategoricalEstimator",
-
+    "GaussianEstimator",
+    "RobustGaussianEstimator",
 ]
