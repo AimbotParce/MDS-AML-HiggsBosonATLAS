@@ -1,29 +1,9 @@
-from typing import Generic, List, Optional, TypeVar
+from typing import Generic, List, Optional, Self, TypeVar
 
 import numpy as np
 from numpy.typing import NDArray
 
-from . import Array1DFloat, FittedProbabilityEstimator, ProbabilityEstimator
-
-
-class FittedHistogramEstimator(FittedProbabilityEstimator):
-    """
-    Fitted histogram-based estimator for a single feature.
-
-    This estimator does not support NaN values in the input data.
-    """
-
-    def __init__(self, histogram: NDArray[np.float64], bin_edges: NDArray[np.float64]):
-        self.histogram = histogram
-        self.bin_edges = bin_edges
-
-    def predict(self, X: Array1DFloat) -> Array1DFloat:
-        """Compute the probability estimations for the data X."""
-        if np.isnan(X).any():
-            raise ValueError("FittedHistogramEstimator does not support NaN values in the input data.")
-        bin_indices = np.digitize(X, self.bin_edges) - 1
-        bin_indices = np.clip(bin_indices, 0, len(self.histogram) - 1)
-        return self.histogram[bin_indices] * np.diff(self.bin_edges)[bin_indices]
+from . import Array1DFloat, ProbabilityEstimator
 
 
 class HistogramEstimator(ProbabilityEstimator):
@@ -32,6 +12,9 @@ class HistogramEstimator(ProbabilityEstimator):
 
     This estimator does not support NaN values in the input data.
     """
+
+    _histogram: NDArray[np.float64]
+    _bin_edges: NDArray[np.float64]
 
     def __init__(self, bins: Optional[int] = None):
         """
@@ -43,7 +26,7 @@ class HistogramEstimator(ProbabilityEstimator):
         """
         self.bins = bins
 
-    def fit(self, X: Array1DFloat) -> FittedHistogramEstimator:
+    def fit(self, X: Array1DFloat) -> Self:
         """Fit the histogram to the data X."""
         if np.isnan(X).any():
             raise ValueError("HistogramEstimator does not support NaN values in the input data.")
@@ -52,4 +35,12 @@ class HistogramEstimator(ProbabilityEstimator):
         else:
             bin_count = self.bins
         histogram, bin_edges = np.histogram(X, bins=bin_count, density=True)
-        return FittedHistogramEstimator(histogram, bin_edges)
+        return self.copy_with(_histogram=histogram, _bin_edges=bin_edges)
+
+    def predict(self, X: Array1DFloat) -> Array1DFloat:
+        """Compute the probability estimations for the data X."""
+        if np.isnan(X).any():
+            raise ValueError("FittedHistogramEstimator does not support NaN values in the input data.")
+        bin_indices = np.digitize(X, self._bin_edges) - 1
+        bin_indices = np.clip(bin_indices, 0, len(self._histogram) - 1)
+        return self._histogram[bin_indices] * np.diff(self._bin_edges)[bin_indices]

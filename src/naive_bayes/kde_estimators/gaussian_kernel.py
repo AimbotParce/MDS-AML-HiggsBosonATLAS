@@ -1,29 +1,17 @@
 import numpy as np
 from numpy.typing import NDArray
 
-from . import FittedKDEstimatorMixin, KDEstimatorBase, KernelMixinBase
+from . import (
+    EagerKDEstimatorBase,
+    KDEstimatorBase,
+    RobustEagerKDEstimatorBase,
+    RobustKDEstimatorBase,
+)
 
 
-class _GaussianKernel(KernelMixinBase):
-    """
-    Fitted gaussian kernel density estimator for a single feature.
-
-    This estimator does not support NaN values in the input data.
-    """
-
-    def _kernel(self, u: NDArray[np.float64]) -> NDArray[np.float64]:
-        """Gaussian kernel function."""
-        return (1 / np.sqrt(2 * np.pi)) * np.exp(-0.5 * u**2)
-
-
-class FittedGaussianKDEstimator(FittedKDEstimatorMixin, _GaussianKernel):
-    """
-    Fitted gaussian kernel density estimator for a single feature.
-
-    This estimator does not support NaN values in the input data.
-    """
-
-    pass
+def _gaussian_kernel(u: NDArray[np.float64]) -> NDArray[np.float64]:
+    """Gaussian kernel function."""
+    return (1 / np.sqrt(2 * np.pi)) * np.exp(-0.5 * u**2)
 
 
 class GaussianKDEstimator(KDEstimatorBase):
@@ -31,7 +19,48 @@ class GaussianKDEstimator(KDEstimatorBase):
     Gaussian kernel density estimator for a single feature.
 
     This estimator does not support NaN values in the input data.
+
+    Note: This is a Lazy implementation, which computes the density estimation
+    on-the-fly during prediction.
     """
 
-    def _create_fitted_estimator(self, non_nan_X, bandwidth):
-        return FittedGaussianKDEstimator(non_nan_X, bandwidth)
+    _kernel = staticmethod(_gaussian_kernel)
+
+
+class RobustGaussianKDEstimator(RobustKDEstimatorBase):
+    """
+    Robust Gaussian kernel density estimator for a single feature.
+
+    This estimator does support NaN values in the input data.
+
+    Note: This is a Lazy implementation, which computes the density estimation
+    on-the-fly during prediction.
+    """
+
+    _kernel = staticmethod(_gaussian_kernel)
+
+
+class EagerGaussianKDEstimator(EagerKDEstimatorBase):
+    """
+    Eager Gaussian kernel density estimator for a single feature.
+
+    This estimator does not support NaN values in the input data.
+
+    Note: This is an Eager implementation, which precomputes the density estimation
+    during the fitting phase.
+    """
+
+    _kernel = staticmethod(_gaussian_kernel)
+
+
+class RobustEagerGaussianKDEstimator(RobustEagerKDEstimatorBase):
+    """
+    Robust Eager Gaussian kernel density estimator for a single feature.
+
+    This estimator does support NaN values in the input data.
+
+    Note: This is an Eager implementation, which precomputes the density estimation
+    during the fitting phase.
+    """
+
+    _kernel = staticmethod(_gaussian_kernel)
