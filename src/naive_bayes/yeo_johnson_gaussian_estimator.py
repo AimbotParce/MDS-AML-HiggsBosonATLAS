@@ -14,10 +14,10 @@ def _gaussian_pdf(mean, std, x: Array1DFloat) -> Array1DFloat:
     return coeff * np.exp(exponent)
 
 
-class BoxCoxGaussianEstimator(ProbabilityEstimator):
+class YeoJohnsonGaussianEstimator(ProbabilityEstimator):
     """
-    Box-Cox Gaussian estimator for a single feature. This estimator assumes that,
-    under a box-cox transformation, the data follows a Gaussian
+    Yeo-Johnson Gaussian estimator for a single feature. This estimator assumes that,
+    under a yeo-johnson transformation, the data follows a Gaussian
     distribution and estimates the parameters (lambda, mean and standard deviation)
     from the data.
 
@@ -39,7 +39,7 @@ class BoxCoxGaussianEstimator(ProbabilityEstimator):
         if np.isnan(X).any():
             raise ValueError("GaussianEstimator does not support NaN values in the input data.")
 
-        transformed_X, lambda_ = stats.boxcox(X + 1e-6)  # small constant to avoid zero values
+        transformed_X, lambda_ = stats.yeojohnson(X + 1e-6)  # small constant to avoid zero values
         mean = np.mean(transformed_X)
         std = np.std(transformed_X)
         return self.copy_with(_mean=mean, _std=std, _lambda=lambda_)
@@ -48,14 +48,14 @@ class BoxCoxGaussianEstimator(ProbabilityEstimator):
         """Compute the probability estimations for the data X."""
         if np.isnan(X).any():
             raise ValueError("GaussianEstimator does not support NaN values in the input data.")
-        transformed_X = stats.boxcox(X + 1e-6, lmbda=self._lambda)
+        transformed_X = stats.yeojohnson(X + 1e-6, lmbda=self._lambda)
         return _gaussian_pdf(self._mean, self._std, transformed_X)
 
 
-class RobustBoxCoxGaussianEstimator(ProbabilityEstimator):
+class RobustYeoJohnsonGaussianEstimator(ProbabilityEstimator):
     """
-    Robust Box-Cox Gaussian estimator for a single feature. This estimator assumes that,
-    under a box-cox transformation, the data follows a Gaussian
+    Robust Yeo-Johnson Gaussian estimator for a single feature. This estimator assumes that,
+    under a yeo-johnson transformation, the data follows a Gaussian
     distribution and estimates the parameters (lambda, mean and standard deviation)
     from the data.
 
@@ -78,7 +78,7 @@ class RobustBoxCoxGaussianEstimator(ProbabilityEstimator):
         nan_mask = np.isnan(X)
         nan_probability = (np.mean(nan_mask, axis=0) + self.laplace_smoothing) / (1 + 2 * self.laplace_smoothing)
         non_nan_X = X[~nan_mask]
-        transformed_X, lambda_ = stats.boxcox(non_nan_X + 1e-6)  # small constant to avoid zero values
+        transformed_X, lambda_ = stats.yeojohnson(non_nan_X + 1e-6)  # small constant to avoid zero values
         mean = np.mean(transformed_X)
         std = np.std(transformed_X)
         return self.copy_with(_mean=mean, _std=std, _nan_probability=nan_probability, _lambda=lambda_)
@@ -88,6 +88,6 @@ class RobustBoxCoxGaussianEstimator(ProbabilityEstimator):
         nan_mask = np.isnan(X)
         likelihoods = np.zeros_like(X)
         likelihoods[nan_mask] = self._nan_probability
-        transformed_X = stats.boxcox(X[~nan_mask] + 1e-6, lmbda=self._lambda)
+        transformed_X = stats.yeojohnson(X[~nan_mask] + 1e-6, lmbda=self._lambda)
         likelihoods[~nan_mask] = _gaussian_pdf(self._mean, self._std, transformed_X)
         return likelihoods

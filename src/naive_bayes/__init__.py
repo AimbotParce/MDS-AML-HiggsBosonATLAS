@@ -232,10 +232,6 @@ class CategoricalAwareBespokeNB(_BaseNB, Generic[YType]):
         return X
 
 
-from .box_cox_gaussian_estimator import (
-    BoxCoxGaussianEstimator,
-    RobustBoxCoxGaussianEstimator,
-)
 from .categorical_estimator import CategoricalEstimator, RobustCategoricalEstimator
 from .gaussian_estimator import GaussianEstimator, RobustGaussianEstimator
 from .histogram_estimator import HistogramEstimator, RobustHistogramEstimator
@@ -244,6 +240,10 @@ from .kde_estimators import (
     GaussianKDEstimator,
     RobustEagerGaussianKDEstimator,
     RobustGaussianKDEstimator,
+)
+from .yeo_johnson_gaussian_estimator import (
+    RobustYeoJohnsonGaussianEstimator,
+    YeoJohnsonGaussianEstimator,
 )
 
 __all__ = [
@@ -260,6 +260,6 @@ __all__ = [
     "RobustCategoricalEstimator",
     "GaussianEstimator",
     "RobustGaussianEstimator",
-    "BoxCoxGaussianEstimator",
-    "RobustBoxCoxGaussianEstimator",
+    "YeoJohnsonGaussianEstimator",
+    "RobustYeoJohnsonGaussianEstimator",
 ]
