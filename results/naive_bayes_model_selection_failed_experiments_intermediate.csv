@@ -1,0 +1,23 @@
+model_class,categorical_estimator_class,continuous_estimator_class,dataset,num_folds,categorical_estimator_params,continuous_estimator_params
+BespokeNB,CategoricalEstimator,BoxCoxGaussianEstimator,drop-rows,10,{},{}
+BespokeNB,CategoricalEstimator,BoxCoxGaussianEstimator,drop-columns,10,{},{}
+BespokeNB,RobustCategoricalEstimator,RobustBoxCoxGaussianEstimator,drop-columns,10,{},{'laplace_smoothing': 0}
+CategoricalAwareBespokeNB,RobustCategoricalEstimator,RobustBoxCoxGaussianEstimator,drop-columns,10,{},{'laplace_smoothing': 0}
+BespokeNB,RobustCategoricalEstimator,RobustBoxCoxGaussianEstimator,drop-columns,10,{},{'laplace_smoothing': 1e-09}
+CategoricalAwareBespokeNB,RobustCategoricalEstimator,RobustBoxCoxGaussianEstimator,drop-columns,10,{},{'laplace_smoothing': 1e-09}
+BespokeNB,RobustCategoricalEstimator,RobustBoxCoxGaussianEstimator,drop-columns,10,{},{'laplace_smoothing': 1e-08}
+CategoricalAwareBespokeNB,RobustCategoricalEstimator,RobustBoxCoxGaussianEstimator,drop-columns,10,{},{'laplace_smoothing': 1e-08}
+BespokeNB,RobustCategoricalEstimator,RobustBoxCoxGaussianEstimator,drop-columns,10,{},{'laplace_smoothing': 1e-07}
+CategoricalAwareBespokeNB,RobustCategoricalEstimator,RobustBoxCoxGaussianEstimator,drop-columns,10,{},{'laplace_smoothing': 1e-07}
+BespokeNB,RobustCategoricalEstimator,RobustBoxCoxGaussianEstimator,drop-columns,10,{},{'laplace_smoothing': 1e-06}
+CategoricalAwareBespokeNB,RobustCategoricalEstimator,RobustBoxCoxGaussianEstimator,drop-columns,10,{},{'laplace_smoothing': 1e-06}
+BespokeNB,RobustCategoricalEstimator,RobustBoxCoxGaussianEstimator,drop-columns,10,{},{'laplace_smoothing': 1e-05}
+CategoricalAwareBespokeNB,RobustCategoricalEstimator,RobustBoxCoxGaussianEstimator,drop-columns,10,{},{'laplace_smoothing': 1e-05}
+BespokeNB,RobustCategoricalEstimator,RobustBoxCoxGaussianEstimator,drop-columns,10,{},{'laplace_smoothing': 0.0001}
+CategoricalAwareBespokeNB,RobustCategoricalEstimator,RobustBoxCoxGaussianEstimator,drop-columns,10,{},{'laplace_smoothing': 0.0001}
+BespokeNB,RobustCategoricalEstimator,RobustBoxCoxGaussianEstimator,drop-columns,10,{},{'laplace_smoothing': 0.001}
+CategoricalAwareBespokeNB,RobustCategoricalEstimator,RobustBoxCoxGaussianEstimator,drop-columns,10,{},{'laplace_smoothing': 0.001}
+BespokeNB,RobustCategoricalEstimator,RobustBoxCoxGaussianEstimator,drop-columns,10,{},{'laplace_smoothing': 0.01}
+CategoricalAwareBespokeNB,RobustCategoricalEstimator,RobustBoxCoxGaussianEstimator,drop-columns,10,{},{'laplace_smoothing': 0.01}
+BespokeNB,RobustCategoricalEstimator,RobustBoxCoxGaussianEstimator,drop-columns,10,{},{'laplace_smoothing': 0.1}
+CategoricalAwareBespokeNB,RobustCategoricalEstimator,RobustBoxCoxGaussianEstimator,drop-columns,10,{},{'laplace_smoothing': 0.1}
