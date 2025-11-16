@@ -9,3 +9,32 @@ stages:
       hash: md5
       md5: ae01726fcb46bddc5212cbda5806a180
       size: 65630848
+  run-preprocess:
+    cmd: jupyter nbconvert --execute --to notebook --inplace 
+      notebooks/00-preprocess.ipynb --stdout
+    deps:
+    - path: data/raw/higgs-challenge.csv.gz
+      hash: md5
+      md5: ae01726fcb46bddc5212cbda5806a180
+      size: 65630848
+    - path: notebooks/00-preprocess.ipynb
+      hash: md5
+      md5: 1a660d885e426e00bbc0f10c5a2ac8b5
+      size: 556122
+    outs:
+    - path: data/processed/test_no_preprocess.csv
+      hash: md5
+      md5: 087dd3e2228599b03a96301be9d8396a
+      size: 21847075
+    - path: data/processed/test_preprocess.csv
+      hash: md5
+      md5: 72e2b33a6c9a2ae17bf58d0f33c0aa88
+      size: 36864365
+    - path: data/processed/train_no_preprocess.csv
+      hash: md5
+      md5: 141176505ba30f2fb61eb443e58de230
+      size: 123773442
+    - path: data/processed/train_preprocess.csv
+      hash: md5
+      md5: 718b7b396ec6ed638c9c306e60bfcce3
+      size: 208560065
