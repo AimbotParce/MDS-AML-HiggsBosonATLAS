@@ -179,6 +179,13 @@ class RobustKDEstimatorBase(ProbabilityEstimator, ABC):
         nan_mask = np.isnan(X)
         nan_probability = (np.mean(nan_mask, axis=0) + self.laplace_smoothing) / (1 + 2 * self.laplace_smoothing)
         non_nan_X = X[~nan_mask]
+
+        if non_nan_X.size == 0:
+            # All values are NaN, so we will assume arbitrary parameters for the KDE. If in inference time
+            # a non-NaN value is given, this will predict probability zero, which would give an error (on the log),
+            # but the BespokeNB already handles this case by adding a very small probability to all classes.
+            return self.copy_with(_non_nan_X=non_nan_X, _bandwidth=self.bandwidth or 1.0, _nan_probability=1.0)
+
         if self.bandwidth is None:
             bandwidth = silverman_bandwidth_rule_of_thumb(X)
         else:
@@ -252,9 +259,11 @@ class RobustEagerKDEstimatorBase(ProbabilityEstimator, ABC):
         else:
             bandwidth = self.bandwidth
 
-        if len(non_nan_X) == 0:
-            warnings.warn("All data points are NaN. Density estimation cannot be computed. Using empty density.")
-            return self.copy_with(_bin_edges=np.array([]), _density=np.array([]), _nan_probability=nan_probability)
+        if non_nan_X.size == 0:
+            # All values are NaN, so we will assume arbitrary parameters for the KDE. If in inference time
+            # a non-NaN value is given, this will predict probability zero, which would give an error (on the log),
+            # but the BespokeNB already handles this case by adding a very small probability to all classes.
+            return self.copy_with(_bin_edges=np.array([1.0]), _density=np.array([1.0]), _nan_probability=1.0)
 
         iqr = np.subtract(*np.percentile(non_nan_X, [75, 25]))
         min_x, max_x = (np.min(non_nan_X) - self.range_padding * iqr, np.max(non_nan_X) + self.range_padding * iqr)

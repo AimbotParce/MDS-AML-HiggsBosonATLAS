@@ -78,6 +78,11 @@ class RobustYeoJohnsonGaussianEstimator(ProbabilityEstimator):
         nan_mask = np.isnan(X)
         nan_probability = (np.mean(nan_mask, axis=0) + self.laplace_smoothing) / (1 + 2 * self.laplace_smoothing)
         non_nan_X = X[~nan_mask]
+        if non_nan_X.size == 0:
+            # All values are NaN, so we will assume arbitrary parameters for the Gaussian. If in inference time
+            # a non-NaN value is given, this will predict probability zero, which would give an error (on the log),
+            # but the BespokeNB already handles this case by adding a very small probability to all classes.
+            return self.copy_with(_mean=0.0, _std=1.0, _nan_probability=1.0, _lambda=1.0)
         transformed_X, lambda_ = stats.yeojohnson(non_nan_X + 1e-6)  # small constant to avoid zero values
         mean = np.mean(transformed_X)
         std = np.std(transformed_X)
