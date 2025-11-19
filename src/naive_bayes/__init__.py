@@ -1,5 +1,5 @@
 from abc import ABC, abstractmethod
-from typing import Annotated, Dict, Generic, List, Literal, Tuple, TypeVar
+from typing import Annotated, Dict, Generic, List, Literal, Self, Tuple, TypeVar
 
 import numpy as np
 from numpy.typing import NDArray
@@ -9,18 +9,7 @@ from sklearn.utils.validation import validate_data
 YType = TypeVar("YType", bound=np.generic)
 
 Array1DFloat = Annotated[NDArray[np.float64], Literal["N"]]
-
-
-class FittedProbabilityEstimator(ABC):
-    """
-    Abstract base class for a fitted probability distribution (or mass) function
-    estimator.
-    """
-
-    @abstractmethod
-    def predict(self, X: Array1DFloat) -> Array1DFloat:
-        """Compute the probability estimations for the data X."""
-        pass
+Array1DInt = Annotated[NDArray[np.int64], Literal["N"]]
 
 
 class ProbabilityEstimator(ABC):
@@ -29,9 +18,24 @@ class ProbabilityEstimator(ABC):
     estimators to data.
     """
 
+    def copy_with(self, **kwargs) -> "Self":
+        """Create a copy of the estimator."""
+        init_kwargs = {}
+        for key in self.__class__.__init__.__code__.co_varnames[1:]:
+            init_kwargs[key] = getattr(self, key)
+        res = self.__class__(**init_kwargs)
+        for key, value in kwargs.items():
+            setattr(res, key, value)
+        return res
+
     @abstractmethod
-    def fit(self, X: Array1DFloat) -> FittedProbabilityEstimator:
-        """Fit the distribution to the data X."""
+    def fit(self, X: Array1DFloat) -> "Self":
+        """Fit the distribution to the data X. Returns a copy of self fitted to X."""
+        pass
+
+    @abstractmethod
+    def predict(self, X: Array1DFloat) -> Array1DFloat:
+        """Compute the probability estimations for the data X."""
         pass
 
 
@@ -42,7 +46,7 @@ class BespokeNB(_BaseNB, Generic[YType]):
     """
 
     _priors: NDArray[np.float64]
-    _fitted_estimators: List[List[FittedProbabilityEstimator]]  # [class][feature]
+    _fitted_estimators: List[List[ProbabilityEstimator]]  # [class][feature]
     num_features: int
     num_classes: int
     classes_: NDArray[YType]
@@ -126,7 +130,7 @@ class CategoricalAwareBespokeNB(_BaseNB, Generic[YType]):
     """
 
     _priors: NDArray[np.float64]
-    _fitted_estimators: List[List[List[FittedProbabilityEstimator]]]  # [class][categorical_combination][feature]
+    _fitted_estimators: List[List[List[ProbabilityEstimator]]]  # [class][categorical_combination][feature]
     num_features: int
     num_classes: int
     classes_: NDArray[YType]
@@ -228,16 +232,34 @@ class CategoricalAwareBespokeNB(_BaseNB, Generic[YType]):
         return X
 
 
-from .histogram_estimator import HistogramEstimator
-from .kde_estimators import *
-from .robust_histogram_estimator import RobustHistogramEstimator
+from .categorical_estimator import CategoricalEstimator, RobustCategoricalEstimator
+from .gaussian_estimator import GaussianEstimator, RobustGaussianEstimator
+from .histogram_estimator import HistogramEstimator, RobustHistogramEstimator
+from .kde_estimators import (
+    EagerGaussianKDEstimator,
+    GaussianKDEstimator,
+    RobustEagerGaussianKDEstimator,
+    RobustGaussianKDEstimator,
+)
+from .yeo_johnson_gaussian_estimator import (
+    RobustYeoJohnsonGaussianEstimator,
+    YeoJohnsonGaussianEstimator,
+)
 
 __all__ = [
     "BespokeNB",
     "CategoricalAwareBespokeNB",
-    "FittedProbabilityEstimator",
     "ProbabilityEstimator",
+    "CategoricalEstimator",
     "HistogramEstimator",
-    "RobustHistogramEstimator",
     "GaussianKDEstimator",
+    "EagerGaussianKDEstimator",
+    "RobustHistogramEstimator",
+    "RobustGaussianKDEstimator",
+    "RobustEagerGaussianKDEstimator",
+    "RobustCategoricalEstimator",
+    "GaussianEstimator",
+    "RobustGaussianEstimator",
+    "YeoJohnsonGaussianEstimator",
+    "RobustYeoJohnsonGaussianEstimator",
 ]

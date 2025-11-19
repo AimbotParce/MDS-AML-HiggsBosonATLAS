@@ -5,3 +5,14 @@ stages:
       'data/raw/higgs-challenge.csv.gz')"
     outs:
     - data/raw/higgs-challenge.csv.gz
+  run-preprocess:
+    cmd: jupyter nbconvert --execute --to notebook --inplace 
+      notebooks/00-preprocess.ipynb --stdout
+    deps:
+    - data/raw/higgs-challenge.csv.gz
+    - notebooks/00-preprocess.ipynb
+    outs:
+    - data/processed/test_no_preprocess.csv
+    - data/processed/test_preprocess.csv
+    - data/processed/train_no_preprocess.csv
+    - data/processed/train_preprocess.csv
